@@ -18,12 +18,8 @@
   <div id="password-gate" class="password-gate">
     <div class="password-card">
       <h1>notagirl and makilah</h1>
-      <p class="subtitle">Private gallery</p>
 
-      <!-- Decorative divider -->
-      <div class="divider">✿</div>
-
-      <p>Enter the password to view our photos</p>
+      <p>Enter the password</p>
 
       <form id="password-form">
         <input
@@ -56,18 +52,12 @@
       <!-- Gallery grid (populated by JavaScript) -->
       <div id="gallery" class="gallery"></div>
 
-      <!-- Empty state (if no photos) -->
-      <div id="empty" class="empty hidden">
-        <div class="empty-icon">📷</div>
-        <h2>No photos yet</h2>
-        <p>leak each other</p>
-      </div>
-
       <!-- Upload section (visible after unlock) -->
       <section class="upload-section" id="upload-section">
         <h2>Add a photo</h2>
         <form id="upload-form">
           <input type="file" id="file-input" accept="image/*" />
+          <label for="file-input" class="upload-label">Choose a picture…</label>
           <button type="submit">Upload</button>
         </form>
         <p id="upload-status"></p>
