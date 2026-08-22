@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Photo Gallery</title>
+  <meta name="description" content="A simple photo gallery" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Password gate (shown first) -->
+  <div id="password-gate" class="password-gate">
+    <div class="password-card">
+      <div class="lock-icon">🔒</div>
+      <h1>Private Gallery</h1>
+      <p>Enter the password to view the photos</p>
+      <form id="password-form">
+        <input
+          type="password"
+          id="password-input"
+          placeholder="Password"
+          autocomplete="current-password"
+          autofocus
+        />
+        <button type="submit">Unlock</button>
+      </form>
+      <p id="password-error" class="password-error hidden">Wrong password. Try again.</p>
+    </div>
+  </div>
+
+  <!-- Gallery content (hidden until unlocked) -->
+  <div id="app" class="app hidden">
+    <header>
+      <div class="header-inner">
+        <h1>My Photo Gallery</h1>
+        <p id="photo-count">Loading…</p>
+      </div>
+    </header>
+
+    <main>
+      <div id="gallery" class="gallery"></div>
+      <div id="empty" class="empty hidden">
+        <div class="empty-icon">📷</div>
+        <h2>No photos yet</h2>
+        <p>Add your pictures to the <code>images/</code> folder, then redeploy.</p>
+        <div class="steps">
+          <p>1. Put .jpg / .png / .webp files in <strong>images/</strong></p>
+          <p>2. Push to GitHub</p>
+          <p>3. Vercel auto-deploys</p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      Drop images into <code>images/</code> and redeploy on Vercel
+    </footer>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true">
+    <button id="close-btn" class="lb-btn close" aria-label="Close">×</button>
+    <button id="prev-btn" class="lb-btn prev" aria-label="Previous">‹</button>
+    <img id="lightbox-img" src="" alt="" />
+    <button id="next-btn" class="lb-btn next" aria-label="Next">›</button>
+    <p id="lightbox-counter"></p>
+  </div>
+
+  <script src="gallery.js"></script>
+</body>
+</html>
