@@ -1,72 +1,322 @@
-/* ============================================
-   RESET & BASE
-   ============================================ */
-* {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+}
+
+:root {
+  --bg: #09090b;
+  --surface: #18181b;
+  --border: #27272a;
+  --text: #fafafa;
+  --muted: #a1a1aa;
+}
+
+html {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: #fafafa;
-  color: #111;
-  line-height: 1.5;
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* ============================================
-   PASSWORD GATE
-   ============================================ */
-.password-gate {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-  padding: 1rem;
+  flex-direction: column;
 }
 
-.password-card {
-  background: #fff;
-  border-radius: 1.5rem;
-  padding: 2.5rem 2rem;
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+}
+
+header h1 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+#photo-count {
+  margin-top: 0.2rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* Main */
+main {
+  flex: 1;
+  max-width: 1280px;
   width: 100%;
-  max-width: 380px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2rem;
+}
+
+/* Gallery grid */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.gallery button {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: none;
+  border-radius: 0.75rem;
+  background: var(--surface);
+  cursor: pointer;
+  padding: 0;
+}
+
+.gallery button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.gallery button:hover img,
+.gallery button:focus-visible img {
+  transform: scale(1.05);
+}
+
+.gallery button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.gallery button:hover::after {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Empty state */
+.empty {
   text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-  animation: float-in 0.5s ease-out;
+  padding: 4rem 1.5rem;
+  border: 1px dashed var(--border);
+  border-radius: 1rem;
+  background: rgba(24, 24, 27, 0.5);
 }
 
-@keyframes float-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.empty.hidden {
+  display: none;
 }
 
-.lock-icon {
-  font-size: 3.5rem;
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.empty h2 {
+  font-size: 1.15rem;
+  font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
-.password-card h1 {
-  font-size: 1.8rem;
-  margin-bottom: 0.25rem;
-  color: #333;
+.empty p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  max-width: 20rem;
+  margin: 0 auto 1.25rem;
 }
 
-.password-card p {
-  color: #666;
+.empty code {
+  background: #27272a;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  color: #e4e4e7;
+}
+
+.steps {
+  display: inline-block;
+  text-align: left;
+  background: #18181b;
+  padding: 0.85rem 1.1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: ui-monospace, monospace;
+}
+
+.steps strong {
+  color: #e4e4e7;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+footer code {
+  background: #27272a;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  color: #d4d4d8;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.lightbox.hidden {
+  display: none;
+}
+
+.lightbox img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  user-select: none;
+}
+
+#lightbox-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.875rem;
+  color: #a1a1aa;
+}
+
+.lb-btn {
+  position: absolute;
+  background: rgba(39, 39, 42, 0.85);
+  border: none;
+  color: white;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  line-height: 1;
+}
+
+.lb-btn:hover {
+  background: #3f3f46;
+}
+
+.lb-btn.close {
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.75rem;
+}
+
+.lb-btn.prev {
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lb-btn.next {
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@media (min-width: 640px) {
+  .lb-btn.prev {
+    left: 1.5rem;
+  }
+  .lb-btn.next {
+    right: 1.5rem;
+  }
+}
+
+/* ========== Password Gate ========== */
+.password-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 1.5rem;
+}
+
+.password-gate.hidden {
+  display: none;
+}
+
+.password-card {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  padding: 2.25rem 1.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+}
+
+.lock-icon {
+  font-size: 2.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.password-card h1 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.password-card > p {
+  color: var(--muted);
+  font-size: 0.9rem;
   margin-bottom: 1.5rem;
-  font-size: 0.95rem;
 }
 
 #password-form {
@@ -77,33 +327,35 @@ body {
 
 #password-input {
   width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: #09090b;
+  color: var(--text);
   outline: none;
+  transition: border-color 0.15s;
 }
 
 #password-input:focus {
-  border-color: #f06292;
-  box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.2);
+  border-color: #71717a;
 }
 
 #password-form button {
-  padding: 0.85rem;
-  background: #f06292;
-  color: #fff;
-  border: none;
-  border-radius: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.5rem;
+  background: #fafafa;
+  color: #09090b;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.15s, transform 0.1s;
 }
 
 #password-form button:hover {
-  background: #ec407a;
+  background: #e4e4e7;
 }
 
 #password-form button:active {
@@ -111,232 +363,22 @@ body {
 }
 
 .password-error {
-  color: #d32f2f;
-  font-size: 0.9rem;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #f87171;
 }
 
-/* ============================================
-   APP HEADER
-   ============================================ */
-.app header {
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
-  padding: 1.25rem 1.5rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.password-error.hidden {
+  display: none;
 }
 
-.header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
+/* App wrapper */
+.app {
+  min-height: 100vh;
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
 }
 
-.header-inner h1 {
-  font-size: 1.6rem;
-  color: #111;
-  letter-spacing: -0.02em;
-}
-
-#photo-count {
-  font-size: 0.95rem;
-  color: #888;
-  font-weight: 500;
-}
-
-/* ============================================
-   GALLERY GRID
-   ============================================ */
-main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1.5rem;
-}
-
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
-}
-
-.gallery button {
-  position: relative;
-  border: none;
-  padding: 0;
-  background: none;
-  cursor: pointer;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  aspect-ratio: 1 / 1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.gallery button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.gallery img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.gallery button:hover img {
-  transform: scale(1.05);
-}
-
-/* ============================================
-   EMPTY STATE
-   ============================================ */
-.empty {
-  text-align: center;
-  padding: 4rem 1rem;
-  color: #666;
-}
-
-.empty-icon {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-}
-
-.empty h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.empty p {
-  margin-bottom: 1rem;
-}
-
-.steps {
-  background: #f9f9f9;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  max-width: 400px;
-  margin: 1.5rem auto 0;
-  text-align: left;
-}
-
-.steps p {
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-}
-
-/* ============================================
-   LIGHTBOX
-   ============================================ */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  animation: fade-in 0.2s ease-out;
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.lightbox img {
-  max-width: 90vw;
-  max-height: 85vh;
-  object-fit: contain;
-  border-radius: 4px;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-.lb-btn {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
-  font-size: 2.5rem;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, transform 0.1s;
-  line-height: 1;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.lb-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.lb-btn:active {
-  transform: scale(0.95);
-}
-
-.lb-btn.close {
-  top: 1.25rem;
-  right: 1.25rem;
-  font-size: 2rem;
-}
-
-.lb-btn.prev {
-  left: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.lb-btn.next {
-  right: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#lightbox-counter {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #fff;
-  font-size: 0.95rem;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 0.35rem 0.8rem;
-  border-radius: 2rem;
-  letter-spacing: 0.05em;
-}
-
-/* ============================================
-   RESPONSIVE TWEAKS
-   ============================================ */
-@media (max-width: 600px) {
-  .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .gallery {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .lb-btn {
-    width: 50px;
-    height: 50px;
-    font-size: 2rem;
-  }
+.app.hidden {
+  display: none;
 }
