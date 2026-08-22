@@ -1,61 +1,70 @@
 /**
  * ============================================
- *  GALLERY LOGIC (Cloudinary version)
+ *  GALLERY LOGIC (Cloudinary version, null-safe)
  * ============================================
  */
 
 const STORAGE_KEY = "gallery_unlocked";
 
-// ====== CLOUDINARY CONFIG (edit these) ======
+// ====== CLOUDINARY CONFIG (replace with your real values) ======
 const CLOUD_NAME = "vrvrxg8g";
 const UPLOAD_PRESET = "gallery_preset";
 const PHOTO_TAG = "gallery"; // optional tag to list only your gallery photos
-// ============================================
+// ===============================================================
 
 let photos = [];
 let currentIndex = 0;
 
+// DOM elements
 let passwordGate, passwordForm, passwordInput, passwordError, app;
 let galleryEl, emptyEl, countEl, lightbox, lightboxImg, counterEl;
 let closeBtn, prevBtn, nextBtn;
 let uploadForm, fileInput, uploadStatus;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Grab all elements
-  passwordGate = document.getElementById("password-gate");
-  passwordForm = document.getElementById("password-form");
-  passwordInput = document.getElementById("password-input");
-  passwordError = document.getElementById("password-error");
-  app = document.getElementById("app");
+  // Helper to safely get an element
+  const get = (id) => {
+    const el = document.getElementById(id);
+    if (!el) console.error(`Element #${id} not found in HTML`);
+    return el;
+  };
 
-  galleryEl = document.getElementById("gallery");
-  emptyEl = document.getElementById("empty");
-  countEl = document.getElementById("photo-count");
-  lightbox = document.getElementById("lightbox");
-  lightboxImg = document.getElementById("lightbox-img");
-  counterEl = document.getElementById("lightbox-counter");
-  closeBtn = document.getElementById("close-btn");
-  prevBtn = document.getElementById("prev-btn");
-  nextBtn = document.getElementById("next-btn");
+  passwordGate = get("password-gate");
+  passwordForm = get("password-form");
+  passwordInput = get("password-input");
+  passwordError = get("password-error");
+  app = get("app");
 
-  uploadForm = document.getElementById("upload-form");
-  fileInput = document.getElementById("file-input");
-  uploadStatus = document.getElementById("upload-status");
+  galleryEl = get("gallery");
+  emptyEl = get("empty");
+  countEl = get("photo-count");
+  lightbox = get("lightbox");
+  lightboxImg = get("lightbox-img");
+  counterEl = get("lightbox-counter");
+  closeBtn = get("close-btn");
+  prevBtn = get("prev-btn");
+  nextBtn = get("next-btn");
 
-  // Event listeners
-  passwordForm.addEventListener("submit", handlePasswordSubmit);
-  uploadForm.addEventListener("submit", handleUploadSubmit);
+  uploadForm = get("upload-form");
+  fileInput = get("file-input");
+  uploadStatus = get("upload-status");
 
-  closeBtn.addEventListener("click", closeLightbox);
-  nextBtn.addEventListener("click", (e) => { e.stopPropagation(); goNext(); });
-  prevBtn.addEventListener("click", (e) => { e.stopPropagation(); goPrev(); });
+  // Set up event listeners (only if elements exist)
+  if (passwordForm) passwordForm.addEventListener("submit", handlePasswordSubmit);
+  if (uploadForm) uploadForm.addEventListener("submit", handleUploadSubmit);
 
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
+  if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
+  if (nextBtn) nextBtn.addEventListener("click", (e) => { e.stopPropagation(); goNext(); });
+  if (prevBtn) prevBtn.addEventListener("click", (e) => { e.stopPropagation(); goPrev(); });
+
+  if (lightbox) {
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+  }
 
   document.addEventListener("keydown", (e) => {
-    if (lightbox.classList.contains("hidden")) return;
+    if (!lightbox || lightbox.classList.contains("hidden")) return;
     if (e.key === "Escape") closeLightbox();
     if (e.key === "ArrowRight") goNext();
     if (e.key === "ArrowLeft") goPrev();
@@ -63,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (isUnlocked()) {
     unlock();
-  } else {
+  } else if (passwordInput) {
     passwordInput.focus();
   }
 });
@@ -75,26 +84,28 @@ function isUnlocked() {
 
 function unlock() {
   sessionStorage.setItem(STORAGE_KEY, "true");
-  passwordGate.classList.add("hidden");
-  app.classList.remove("hidden");
+  if (passwordGate) passwordGate.classList.add("hidden");
+  if (app) app.classList.remove("hidden");
   loadPhotos();
 }
 
 function showError() {
+  if (!passwordError) return;
   passwordError.classList.remove("hidden");
-  passwordInput.value = "";
-  passwordInput.focus();
-  passwordInput.style.borderColor = "#ff6b6b";
-  setTimeout(() => {
-    passwordInput.style.borderColor = "";
-  }, 600);
+  if (passwordInput) {
+    passwordInput.value = "";
+    passwordInput.focus();
+    passwordInput.style.borderColor = "#ff6b6b";
+    setTimeout(() => {
+      passwordInput.style.borderColor = "";
+    }, 600);
+  }
 }
 
 async function handlePasswordSubmit(e) {
   e.preventDefault();
-  const entered = passwordInput.value.trim();
+  const entered = passwordInput ? passwordInput.value.trim() : "";
 
-  // Use the same Vercel password API we already have
   try {
     const res = await fetch("/api/check-password", {
       method: "POST",
@@ -115,9 +126,14 @@ async function handlePasswordSubmit(e) {
 
 // ---------- Photo loading (from Cloudinary) ----------
 async function loadPhotos() {
+  if (!galleryEl || !emptyEl || !countEl) {
+    console.error("Gallery, empty, or count element missing");
+    return;
+  }
+
   try {
-    // Fetch all images with our tag
     const res = await fetch(`https://res.cloudinary.com/${CLOUD_NAME}/image/list/${PHOTO_TAG}.json`);
+    if (!res.ok) throw new Error(`List photos returned ${res.status}`);
     const data = await res.json();
 
     photos = data.resources.map(item => item.secure_url);
@@ -181,7 +197,7 @@ async function handleUploadSubmit(e) {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error?.message || "Upload failed");
+      throw new Error(data.error?.message || `Upload failed with status ${res.status}`);
     }
 
     uploadStatus.textContent = "Uploaded successfully!";
@@ -195,6 +211,7 @@ async function handleUploadSubmit(e) {
 
 // ---------- Lightbox ----------
 function openLightbox(index) {
+  if (!lightbox || !lightboxImg || !counterEl) return;
   currentIndex = index;
   updateLightbox();
   lightbox.classList.remove("hidden");
@@ -202,22 +219,26 @@ function openLightbox(index) {
 }
 
 function closeLightbox() {
+  if (!lightbox) return;
   lightbox.classList.add("hidden");
   document.body.style.overflow = "";
 }
 
 function updateLightbox() {
+  if (!lightboxImg || !counterEl) return;
   lightboxImg.src = photos[currentIndex];
   lightboxImg.alt = `Photo ${currentIndex + 1}`;
   counterEl.textContent = `${currentIndex + 1} / ${photos.length}`;
 }
 
 function goNext() {
+  if (!photos.length) return;
   currentIndex = (currentIndex + 1) % photos.length;
   updateLightbox();
 }
 
 function goPrev() {
+  if (!photos.length) return;
   currentIndex = (currentIndex - 1 + photos.length) % photos.length;
   updateLightbox();
 }
