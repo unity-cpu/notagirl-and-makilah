@@ -31,6 +31,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ url: blob.url });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Upload failed' });
+    return res.status(500).json({ error: 'Upload failed', details: error.message });
   }
 }
