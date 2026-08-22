@@ -4,9 +4,6 @@
  * ============================================
  */
 
-// Password people must enter to see the gallery
-const PASSWORD = "notagirlisgay";
-
 // List your photo filenames (they must be in the images/ folder)
 const photos = [
   "01-selfie.jpg",
@@ -72,13 +69,24 @@ function showError() {
   }, 600);
 }
 
-passwordForm.addEventListener("submit", (e) => {
+passwordForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const entered = passwordInput.value.trim();
 
-  if (entered === PASSWORD) {
-    unlock();
-  } else {
+  try {
+    const res = await fetch("/api/check-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: entered }),
+    });
+
+    if (res.ok) {
+      unlock();
+    } else {
+      showError();
+    }
+  } catch (err) {
+    console.error("Password check failed:", err);
     showError();
   }
 });
