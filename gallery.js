@@ -7,7 +7,7 @@
 const STORAGE_KEY = "gallery_unlocked";
 
 // ====== CLOUDINARY CONFIG (edit these) ======
-const CLOUD_NAME = "c-81cfbf25d111365cb07ad16f496b5b";
+const CLOUD_NAME = "vrvrxg8g";
 const UPLOAD_PRESET = "gallery_preset";
 const PHOTO_TAG = "gallery"; // optional tag to list only your gallery photos
 // ============================================
