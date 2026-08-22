@@ -6,28 +6,63 @@
 
 const STORAGE_KEY = "gallery_unlocked";
 
-const passwordGate = document.getElementById("password-gate");
-const passwordForm = document.getElementById("password-form");
-const passwordInput = document.getElementById("password-input");
-const passwordError = document.getElementById("password-error");
-const app = document.getElementById("app");
-
-const galleryEl = document.getElementById("gallery");
-const emptyEl = document.getElementById("empty");
-const countEl = document.getElementById("photo-count");
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-const counterEl = document.getElementById("lightbox-counter");
-const closeBtn = document.getElementById("close-btn");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
-
-const uploadForm = document.getElementById("upload-form");
-const fileInput = document.getElementById("file-input");
-const uploadStatus = document.getElementById("upload-status");
-
-let photos = [];          // Array of image URLs (filled by API)
+let photos = [];
 let currentIndex = 0;
+
+let passwordGate, passwordForm, passwordInput, passwordError, app;
+let galleryEl, emptyEl, countEl, lightbox, lightboxImg, counterEl;
+let closeBtn, prevBtn, nextBtn;
+let uploadForm, fileInput, uploadStatus;
+
+// ---------- Initialise after DOM is ready ----------
+document.addEventListener("DOMContentLoaded", () => {
+  // Grab all elements
+  passwordGate = document.getElementById("password-gate");
+  passwordForm = document.getElementById("password-form");
+  passwordInput = document.getElementById("password-input");
+  passwordError = document.getElementById("password-error");
+  app = document.getElementById("app");
+
+  galleryEl = document.getElementById("gallery");
+  emptyEl = document.getElementById("empty");
+  countEl = document.getElementById("photo-count");
+  lightbox = document.getElementById("lightbox");
+  lightboxImg = document.getElementById("lightbox-img");
+  counterEl = document.getElementById("lightbox-counter");
+  closeBtn = document.getElementById("close-btn");
+  prevBtn = document.getElementById("prev-btn");
+  nextBtn = document.getElementById("next-btn");
+
+  uploadForm = document.getElementById("upload-form");
+  fileInput = document.getElementById("file-input");
+  uploadStatus = document.getElementById("upload-status");
+
+  // Set up event listeners
+  passwordForm.addEventListener("submit", handlePasswordSubmit);
+  uploadForm.addEventListener("submit", handleUploadSubmit);
+
+  closeBtn.addEventListener("click", closeLightbox);
+  nextBtn.addEventListener("click", (e) => { e.stopPropagation(); goNext(); });
+  prevBtn.addEventListener("click", (e) => { e.stopPropagation(); goPrev(); });
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (lightbox.classList.contains("hidden")) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowRight") goNext();
+    if (e.key === "ArrowLeft") goPrev();
+  });
+
+  // Check if already unlocked
+  if (isUnlocked()) {
+    unlock();
+  } else {
+    passwordInput.focus();
+  }
+});
 
 // ---------- Password ----------
 function isUnlocked() {
@@ -51,7 +86,7 @@ function showError() {
   }, 600);
 }
 
-passwordForm.addEventListener("submit", async (e) => {
+async function handlePasswordSubmit(e) {
   e.preventDefault();
   const entered = passwordInput.value.trim();
 
@@ -71,16 +106,22 @@ passwordForm.addEventListener("submit", async (e) => {
     console.error("Password check failed:", err);
     showError();
   }
-});
+}
 
 // ---------- Photo loading ----------
 async function loadPhotos() {
+  // Guard against missing elements
+  if (!emptyEl || !countEl || !galleryEl) {
+    console.error("Required gallery elements not found.");
+    return;
+  }
+
   try {
     const res = await fetch("/api/list-photos");
-    if (!res.ok) throw new Error("Failed to list photos");
+    if (!res.ok) throw new Error(`List photos returned ${res.status}`);
     const data = await res.json();
 
-    photos = data.photos.map(p => p.url);   // full URLs from Vercel Blob
+    photos = data.photos.map(p => p.url);
 
     if (!photos.length) {
       emptyEl.classList.remove("hidden");
@@ -115,8 +156,10 @@ async function loadPhotos() {
 }
 
 // ---------- Upload ----------
-uploadForm.addEventListener("submit", async (e) => {
+async function handleUploadSubmit(e) {
   e.preventDefault();
+  if (!fileInput || !uploadStatus) return;
+
   const file = fileInput.files[0];
   if (!file) {
     uploadStatus.textContent = "Please choose a file.";
@@ -132,22 +175,23 @@ uploadForm.addEventListener("submit", async (e) => {
     const res = await fetch("/api/upload-photo", {
       method: "POST",
       body: formData,
-      // If you set UPLOAD_SECRET, add the header here:
+      // If you set UPLOAD_SECRET, uncomment the next line:
       // headers: { "x-upload-secret": "your-secret-here" },
     });
 
     if (!res.ok) {
-      throw new Error("Upload failed");
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.details || errorData.error || `Upload failed with status ${res.status}`);
     }
 
     uploadStatus.textContent = "Uploaded successfully!";
     fileInput.value = "";
-    await loadPhotos();        // reload the gallery
+    await loadPhotos();
   } catch (err) {
-    console.error(err);
-    uploadStatus.textContent = "Upload failed. Please try again.";
+    console.error("Upload error:", err);
+    uploadStatus.textContent = `Upload failed: ${err.message}`;
   }
-});
+}
 
 // ---------- Lightbox ----------
 function openLightbox(index) {
@@ -176,33 +220,4 @@ function goNext() {
 function goPrev() {
   currentIndex = (currentIndex - 1 + photos.length) % photos.length;
   updateLightbox();
-}
-
-// Lightbox controls
-closeBtn.addEventListener("click", closeLightbox);
-nextBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  goNext();
-});
-prevBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  goPrev();
-});
-
-lightbox.addEventListener("click", (e) => {
-  if (e.target === lightbox) closeLightbox();
-});
-
-document.addEventListener("keydown", (e) => {
-  if (lightbox.classList.contains("hidden")) return;
-  if (e.key === "Escape") closeLightbox();
-  if (e.key === "ArrowRight") goNext();
-  if (e.key === "ArrowLeft") goPrev();
-});
-
-// ---------- Start ----------
-if (isUnlocked()) {
-  unlock();
-} else {
-  passwordInput.focus();
 }
