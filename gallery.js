@@ -132,7 +132,6 @@ async function loadPhotos() {
   }
 
   try {
-    // Call our own serverless API instead of Cloudinary's legacy endpoint
     const res = await fetch('/api/list-photos');
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
