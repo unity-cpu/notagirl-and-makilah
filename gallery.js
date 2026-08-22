@@ -170,37 +170,51 @@ async function handleUploadSubmit(e) {
   e.preventDefault();
   if (!fileInput || !uploadStatus) return;
 
-  const file = fileInput.files[0];
-  if (!file) {
-    uploadStatus.textContent = "Please choose a file.";
+  const files = fileInput.files;
+  if (!files.length) {
+    uploadStatus.textContent = "Please choose at least one file.";
     return;
   }
 
-  uploadStatus.textContent = "Uploading…";
+  uploadStatus.textContent = `Uploading ${files.length} photo${files.length === 1 ? "" : "s"}…`;
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", UPLOAD_PRESET);
-  formData.append("tags", PHOTO_TAG);
+  let uploadedCount = 0;
+  let failedCount = 0;
 
-  try {
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-      method: "POST",
-      body: formData,
-    });
+  for (const file of files) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    formData.append("tags", PHOTO_TAG);
 
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error?.message || `Upload failed with status ${res.status}`);
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error?.message || `Upload failed with status ${res.status}`);
+      }
+
+      uploadedCount++;
+      uploadStatus.textContent = `Uploaded ${uploadedCount}/${files.length}…`;
+    } catch (err) {
+      console.error("Upload error:", err);
+      failedCount++;
     }
-
-    uploadStatus.textContent = "Uploaded successfully!";
-    fileInput.value = "";
-    await loadPhotos();
-  } catch (err) {
-    console.error("Upload error:", err);
-    uploadStatus.textContent = `Upload failed: ${err.message}`;
   }
+
+  // Final status
+  if (failedCount === 0) {
+    uploadStatus.textContent = `Uploaded ${uploadedCount} photo${uploadedCount === 1 ? "" : "s"} successfully!`;
+  } else {
+    uploadStatus.textContent = `Uploaded ${uploadedCount} of ${files.length}. ${failedCount} failed.`;
+  }
+
+  fileInput.value = "";
+  await loadPhotos();   // refresh gallery once after all uploads
 }
 
 // ---------- Lightbox ----------
