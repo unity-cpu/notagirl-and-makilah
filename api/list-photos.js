@@ -10,8 +10,10 @@ export default async function handler(req, res) {
         pathname: blob.pathname,
       }))
       .sort((a, b) => a.pathname.localeCompare(b.pathname));
+
     res.status(200).json({ photos });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to list photos' });
   }
 }
