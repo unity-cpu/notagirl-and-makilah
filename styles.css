@@ -9,8 +9,8 @@
 
 body {
   font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #fdf8f2;              /* warm paper tone */
-  color: #3e2f2a;
+  background: #000000;
+  color: #e0e0e0;
   line-height: 1.6;
   min-height: 100vh;
 }
@@ -27,23 +27,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(255, 200, 180, 0.25), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(180, 220, 200, 0.2), transparent 45%),
-    #fdf8f2;
+  background: #000000;
   padding: 1rem;
 }
 
 .password-card {
-  background: #fff;
-  border: 1px solid #eadfd3;
+  background: #111111;
+  border: 1px solid #2a2a2a;
   border-radius: 1.2rem;
   padding: 2.5rem 2rem;
   width: 100%;
   max-width: 380px;
   text-align: center;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03),
-              0 2px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
   transform: rotate(-0.5deg);
   animation: float-in 0.5s ease-out;
 }
@@ -69,7 +65,7 @@ body {
   font-family: "Caveat", cursive;
   font-size: 2.5rem;
   font-weight: 600;
-  color: #5a4138;
+  color: #ffffff;
   margin-bottom: 0.1rem;
 }
 
@@ -77,12 +73,19 @@ body {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #b2907e;
+  color: #888888;
   margin-bottom: 0.8rem;
 }
 
+.divider {
+  font-size: 1.4rem;
+  color: #666666;
+  margin: 0.5rem 0 0.8rem;
+  user-select: none;
+}
+
 .password-card p {
-  color: #7a6257;
+  color: #aaaaaa;
   margin-bottom: 1.2rem;
   font-size: 0.95rem;
 }
@@ -96,23 +99,28 @@ body {
 #password-input {
   width: 100%;
   padding: 0.8rem 1rem;
-  border: 1.5px solid #e5d8ce;
+  border: 1.5px solid #333333;
   border-radius: 0.6rem;
   font-size: 1rem;
-  background: #fefcf9;
+  background: #1a1a1a;
+  color: #ffffff;
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
 }
 
+#password-input::placeholder {
+  color: #777777;
+}
+
 #password-input:focus {
-  border-color: #c78f7a;
-  box-shadow: 0 0 0 3px rgba(199, 143, 122, 0.15);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 #password-form button {
   padding: 0.8rem;
-  background: #b27a68;
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
   border: none;
   border-radius: 0.6rem;
   font-size: 1rem;
@@ -123,7 +131,7 @@ body {
 }
 
 #password-form button:hover {
-  background: #9f6a59;
+  background: #e0e0e0;
 }
 
 #password-form button:active {
@@ -131,18 +139,25 @@ body {
 }
 
 .password-error {
-  color: #c0392b;
+  color: #ff6b6b;
   font-size: 0.9rem;
   margin-top: 0.7rem;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #666666;
+  margin-top: 1rem;
+  font-style: italic;
 }
 
 /* ============================================
    APP HEADER
    ============================================ */
 .app header {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid #eadfd3;
+  border-bottom: 1px solid #222222;
   padding: 1.2rem 1.5rem;
   position: sticky;
   top: 0;
@@ -163,24 +178,24 @@ body {
   font-family: "Caveat", cursive;
   font-size: 2.2rem;
   font-weight: 600;
-  color: #4e382f;
+  color: #ffffff;
   letter-spacing: 0.01em;
 }
 
 .tagline {
   font-size: 0.85rem;
-  color: #a08070;
+  color: #999999;
   margin-top: -0.2rem;
 }
 
 #photo-count {
   font-size: 0.9rem;
-  color: #9b7d6e;
+  color: #aaaaaa;
   font-weight: 600;
 }
 
 /* ============================================
-   GALLERY GRID (scrapbook style)
+   GALLERY GRID (scrapbook style, dark)
    ============================================ */
 main {
   max-width: 1100px;
@@ -203,14 +218,13 @@ main {
   border-radius: 0.3rem;
   overflow: hidden;
   aspect-ratio: 1 / 1;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05),
-              0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5),
+              0 1px 3px rgba(0, 0, 0, 0.3);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  /* Slight random rotation */
   transform: rotate(var(--rot, 0deg));
 }
 
-/* Give each thumbnail a slightly different rotation */
+/* Slight random rotation */
 .gallery button:nth-child(odd) {
   --rot: -1.2deg;
 }
@@ -226,7 +240,7 @@ main {
 
 .gallery button:hover {
   transform: rotate(0deg) translateY(-4px) scale(1.02);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
   z-index: 2;
 }
 
@@ -242,15 +256,13 @@ main {
   transform: scale(1.06);
 }
 
-/* Polaroid-style white border on some? Optional, skip for now */
-
 /* ============================================
    EMPTY STATE
    ============================================ */
 .empty {
   text-align: center;
   padding: 4rem 1rem;
-  color: #7a6257;
+  color: #aaaaaa;
 }
 
 .empty-icon {
@@ -262,7 +274,7 @@ main {
 .empty h2 {
   font-family: "Caveat", cursive;
   font-size: 2rem;
-  color: #4e382f;
+  color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
@@ -271,7 +283,8 @@ main {
 }
 
 .steps {
-  background: #f3ece5;
+  background: #111111;
+  border: 1px solid #222222;
   border-radius: 1rem;
   padding: 1.2rem;
   max-width: 400px;
@@ -285,12 +298,28 @@ main {
 }
 
 /* ============================================
+   MEMORY NOTE
+   ============================================ */
+.memory-note {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  color: #bbbbbb;
+  font-family: "Caveat", cursive;
+  font-size: 1.8rem;
+  line-height: 1.4;
+}
+
+.memory-note p {
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================
    LIGHTBOX
    ============================================ */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(30, 20, 15, 0.95);
+  background: rgba(0, 0, 0, 0.97);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -308,16 +337,16 @@ main {
   max-height: 82vh;
   object-fit: contain;
   border-radius: 3px;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
   user-select: none;
   -webkit-user-drag: none;
 }
 
 .lb-btn {
   position: absolute;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: #fff;
+  color: #ffffff;
   font-size: 2.2rem;
   width: 54px;
   height: 54px;
@@ -363,9 +392,9 @@ main {
   bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  color: #fff;
+  color: #ffffff;
   font-size: 0.9rem;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   padding: 0.3rem 0.8rem;
   border-radius: 2rem;
   letter-spacing: 0.04em;
@@ -377,10 +406,20 @@ main {
 footer {
   text-align: center;
   padding: 2rem 1rem;
-  color: #a08070;
-  font-size: 0.9rem;
+  color: #777777;
+  font-size: 1rem;
+}
+
+footer p:first-child {
   font-family: "Caveat", cursive;
   font-size: 1.2rem;
+  color: #aaaaaa;
+}
+
+.footer-date {
+  font-size: 0.9rem;
+  color: #555555;
+  margin-top: 0.2rem;
 }
 
 /* ============================================
@@ -402,46 +441,4 @@ footer {
     height: 46px;
     font-size: 1.8rem;
   }
-}
-/* Decorative divider */
-.divider {
-  font-size: 1.4rem;
-  color: #c78f7a;
-  margin: 0.5rem 0 0.8rem;
-  user-select: none;
-}
-
-/* Hint under password form */
-.hint {
-  font-size: 0.85rem;
-  color: #b2907e;
-  margin-top: 1rem;
-  font-style: italic;
-}
-
-/* Title group in header */
-.title-group {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Memory note section */
-.memory-note {
-  text-align: center;
-  padding: 3rem 1rem 2rem;
-  color: #7a6257;
-  font-family: "Caveat", cursive;
-  font-size: 1.8rem;
-  line-height: 1.4;
-}
-
-.memory-note p {
-  margin-bottom: 0.5rem;
-}
-
-/* Footer date */
-.footer-date {
-  font-size: 0.9rem;
-  color: #b2907e;
-  margin-top: 0.2rem;
 }
