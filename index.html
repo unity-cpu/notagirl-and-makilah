@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>notagirl and makilah</title>
-  <meta name="description" content="A simple photo gallery" />
+  <meta name="description" content="photo gallery of notagirl and makilah" />
+
+  <!-- Google Fonts (Caveat + Nunito) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,8 +18,14 @@
   <div id="password-gate" class="password-gate">
     <div class="password-card">
       <div class="lock-icon">🔒</div>
-      <h1>grrrr</h1>
-      <p>Enter the password to view the photos</p>
+      <h1>notagirl and makilah</h1>
+      <p class="subtitle">Private gallery</p>
+
+      <!-- Decorative divider -->
+      <div class="divider">✿</div>
+
+      <p>Enter the password to view our photos</p>
+
       <form id="password-form">
         <input
           type="password"
@@ -24,6 +36,8 @@
         />
         <button type="submit">Unlock</button>
       </form>
+
+      <!-- Handwritten note (hidden until wrong password) -->
       <p id="password-error" class="password-error hidden">Wrong password. Try again.</p>
     </div>
   </div>
@@ -32,13 +46,18 @@
   <div id="app" class="app hidden">
     <header>
       <div class="header-inner">
-        <h1>notagirl and makilah</h1>
-        <p id="photo-count">Loading…</p>
+        <div class="title-group">
+          <h1>notagirl and makilah</h1>
+        </div>
+        <p id="photo-count" class="photo-count">Loading…</p>
       </div>
     </header>
 
     <main>
+      <!-- Gallery grid (populated by JavaScript) -->
       <div id="gallery" class="gallery"></div>
+
+      <!-- Empty state (if no photos) -->
       <div id="empty" class="empty hidden">
         <div class="empty-icon">📷</div>
         <h2>No photos yet</h2>
@@ -49,6 +68,7 @@
           <p>3. Vercel auto-deploys</p>
         </div>
       </div>
+      </section>
     </main>
   </div>
 

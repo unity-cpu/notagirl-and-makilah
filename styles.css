@@ -403,3 +403,45 @@ footer {
     font-size: 1.8rem;
   }
 }
+/* Decorative divider */
+.divider {
+  font-size: 1.4rem;
+  color: #c78f7a;
+  margin: 0.5rem 0 0.8rem;
+  user-select: none;
+}
+
+/* Hint under password form */
+.hint {
+  font-size: 0.85rem;
+  color: #b2907e;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+/* Title group in header */
+.title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Memory note section */
+.memory-note {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  color: #7a6257;
+  font-family: "Caveat", cursive;
+  font-size: 1.8rem;
+  line-height: 1.4;
+}
+
+.memory-note p {
+  margin-bottom: 0.5rem;
+}
+
+/* Footer date */
+.footer-date {
+  font-size: 0.9rem;
+  color: #b2907e;
+  margin-top: 0.2rem;
+}
