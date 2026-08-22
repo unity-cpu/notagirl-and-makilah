@@ -139,7 +139,7 @@ async function loadPhotos() {
     }
 
     const data = await res.json();
-    photos = data.photos;   // <-- now photos is an array of URLs
+    photos = data.photos;   // <-- this is now an array of URLs
 
     if (!photos.length) {
       emptyEl.classList.remove("hidden");
