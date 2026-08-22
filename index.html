@@ -17,8 +17,11 @@
   <!-- Password gate (shown first) -->
   <div id="password-gate" class="password-gate">
     <div class="password-card">
-      <div class="lock-icon">🔒</div>
       <h1>notagirl and makilah</h1>
+      <p class="subtitle">Private gallery</p>
+
+      <!-- Decorative divider -->
+      <div class="divider">✿</div>
 
       <p>Enter the password to view our photos</p>
 
@@ -33,7 +36,7 @@
         <button type="submit">Unlock</button>
       </form>
 
-      <!-- Handwritten note (hidden until wrong password) -->
+      <!-- Error message -->
       <p id="password-error" class="password-error hidden">Wrong password. Try again.</p>
     </div>
   </div>
@@ -57,13 +60,18 @@
       <div id="empty" class="empty hidden">
         <div class="empty-icon">📷</div>
         <h2>No photos yet</h2>
-        <p>Add your pictures to the <code>images/</code> folder, then redeploy.</p>
-        <div class="steps">
-          <p>1. Put .jpg / .png / .webp files in <strong>images/</strong></p>
-          <p>2. Push to GitHub</p>
-          <p>3. Vercel auto-deploys</p>
-        </div>
+        <p>leak each other</p>
       </div>
+
+      <!-- Upload section (visible after unlock) -->
+      <section class="upload-section" id="upload-section">
+        <h2>Add a photo</h2>
+        <form id="upload-form">
+          <input type="file" id="file-input" accept="image/*" />
+          <button type="submit">Upload</button>
+        </form>
+        <p id="upload-status"></p>
+      </section>
       </section>
     </main>
   </div>

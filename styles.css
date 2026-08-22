@@ -442,3 +442,67 @@ footer p:first-child {
     font-size: 1.8rem;
   }
 }
+/* Upload section */
+.upload-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #111111;
+  border: 1px solid #222222;
+  border-radius: 0.8rem;
+  text-align: center;
+}
+
+.upload-section h2 {
+  font-family: "Caveat", cursive;
+  font-size: 1.8rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+#upload-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  align-items: center;
+}
+
+#file-input {
+  color: #aaa;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 0.6rem;
+  padding: 0.6rem;
+  max-width: 250px;
+}
+
+#file-input::file-selector-button {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#upload-form button {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#upload-form button:hover {
+  background: #ddd;
+}
+
+#upload-status {
+  color: #aaa;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}

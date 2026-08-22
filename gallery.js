@@ -1,29 +1,6 @@
 /**
  * ============================================
- *  SETTINGS — edit these
- * ============================================
- */
-
-// List your photo filenames (they must be in the images/ folder)
-const photos = [
-  "01-selfie.jpg",
-  "02-purple-tongue.jpg",
-  "03-side-tongue.jpg",
-  "04-peace-sign.png",
-  "05-pink-tongue.jpg",
-  "06-cheek-squeeze.jpg",
-  "07-kissy.jpg",
-  "08-two-friends.jpg",
-  "09-purple-smile.jpg",
-  "10-blue-duo.jpg",
-  "11-facetime.jpg",
-  "12-low-angle.jpg",
-];
-
-/**
- * ============================================
- *  Gallery + password logic
- *  (you usually don't need to touch below)
+ *  GALLERY LOGIC (with uploads)
  * ============================================
  */
 
@@ -45,6 +22,11 @@ const closeBtn = document.getElementById("close-btn");
 const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
 
+const uploadForm = document.getElementById("upload-form");
+const fileInput = document.getElementById("file-input");
+const uploadStatus = document.getElementById("upload-status");
+
+let photos = [];          // Array of image URLs (filled by API)
 let currentIndex = 0;
 
 // ---------- Password ----------
@@ -56,14 +38,14 @@ function unlock() {
   sessionStorage.setItem(STORAGE_KEY, "true");
   passwordGate.classList.add("hidden");
   app.classList.remove("hidden");
-  initGallery();
+  loadPhotos();
 }
 
 function showError() {
   passwordError.classList.remove("hidden");
   passwordInput.value = "";
   passwordInput.focus();
-  passwordInput.style.borderColor = "#f87171";
+  passwordInput.style.borderColor = "#ff6b6b";
   setTimeout(() => {
     passwordInput.style.borderColor = "";
   }, 600);
@@ -91,35 +73,83 @@ passwordForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ---------- Gallery ----------
-function initGallery() {
-  if (!photos.length) {
+// ---------- Photo loading ----------
+async function loadPhotos() {
+  try {
+    const res = await fetch("/api/list-photos");
+    if (!res.ok) throw new Error("Failed to list photos");
+    const data = await res.json();
+
+    photos = data.photos.map(p => p.url);   // full URLs from Vercel Blob
+
+    if (!photos.length) {
+      emptyEl.classList.remove("hidden");
+      countEl.textContent = "No photos yet";
+      return;
+    }
+
+    emptyEl.classList.add("hidden");
+    countEl.textContent = `${photos.length} photo${photos.length === 1 ? "" : "s"}`;
+
+    galleryEl.innerHTML = "";
+
+    photos.forEach((url, index) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("aria-label", `View photo ${index + 1}`);
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = `Photo ${index + 1}`;
+      img.loading = index < 8 ? "eager" : "lazy";
+
+      btn.appendChild(img);
+      btn.addEventListener("click", () => openLightbox(index));
+      galleryEl.appendChild(btn);
+    });
+  } catch (err) {
+    console.error("Error loading photos:", err);
     emptyEl.classList.remove("hidden");
-    countEl.textContent = "No photos yet";
+    countEl.textContent = "Failed to load photos";
+  }
+}
+
+// ---------- Upload ----------
+uploadForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const file = fileInput.files[0];
+  if (!file) {
+    uploadStatus.textContent = "Please choose a file.";
     return;
   }
 
-  emptyEl.classList.add("hidden");
-  countEl.textContent = `${photos.length} photo${photos.length === 1 ? "" : "s"}`;
+  uploadStatus.textContent = "Uploading…";
 
-  galleryEl.innerHTML = "";
+  const formData = new FormData();
+  formData.append("file", file);
 
-  photos.forEach((filename, index) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.setAttribute("aria-label", `View photo ${index + 1}`);
+  try {
+    const res = await fetch("/api/upload-photo", {
+      method: "POST",
+      body: formData,
+      // If you set UPLOAD_SECRET, add the header here:
+      // headers: { "x-upload-secret": "your-secret-here" },
+    });
 
-    const img = document.createElement("img");
-    img.src = `images/${filename}`;
-    img.alt = `Photo ${index + 1}`;
-    img.loading = index < 8 ? "eager" : "lazy";
+    if (!res.ok) {
+      throw new Error("Upload failed");
+    }
 
-    btn.appendChild(img);
-    btn.addEventListener("click", () => openLightbox(index));
-    galleryEl.appendChild(btn);
-  });
-}
+    uploadStatus.textContent = "Uploaded successfully!";
+    fileInput.value = "";
+    await loadPhotos();        // reload the gallery
+  } catch (err) {
+    console.error(err);
+    uploadStatus.textContent = "Upload failed. Please try again.";
+  }
+});
 
+// ---------- Lightbox ----------
 function openLightbox(index) {
   currentIndex = index;
   updateLightbox();
@@ -133,7 +163,7 @@ function closeLightbox() {
 }
 
 function updateLightbox() {
-  lightboxImg.src = `images/${photos[currentIndex]}`;
+  lightboxImg.src = photos[currentIndex];
   lightboxImg.alt = `Photo ${currentIndex + 1}`;
   counterEl.textContent = `${currentIndex + 1} / ${photos.length}`;
 }
