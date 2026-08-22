@@ -132,11 +132,15 @@ async function loadPhotos() {
   }
 
   try {
-    const res = await fetch(`https://res.cloudinary.com/${CLOUD_NAME}/image/list/${PHOTO_TAG}.json`);
-    if (!res.ok) throw new Error(`List photos returned ${res.status}`);
-    const data = await res.json();
+    // Call our own serverless API instead of Cloudinary's legacy endpoint
+    const res = await fetch('/api/list-photos');
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.details || errorData.error || `List photos returned ${res.status}`);
+    }
 
-    photos = data.resources.map(item => item.secure_url);
+    const data = await res.json();
+    photos = data.photos;   // now photos is an array of URLs
 
     if (!photos.length) {
       emptyEl.classList.remove("hidden");
