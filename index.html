@@ -6,7 +6,6 @@
   <title>notagirl and makilah</title>
   <meta name="description" content="photo gallery of notagirl and makilah" />
 
-  <!-- Google Fonts (Caveat + Nunito) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -14,30 +13,20 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Password gate (shown first) -->
+  <!-- Password gate -->
   <div id="password-gate" class="password-gate">
     <div class="password-card">
       <h1>notagirl and makilah</h1>
-
       <p>Enter the password</p>
-
       <form id="password-form">
-        <input
-          type="password"
-          id="password-input"
-          placeholder="Password"
-          autocomplete="current-password"
-          autofocus
-        />
+        <input type="password" id="password-input" placeholder="Password" autocomplete="current-password" autofocus />
         <button type="submit">Unlock</button>
       </form>
-
-      <!-- Error message -->
       <p id="password-error" class="password-error hidden">Wrong password. Try again.</p>
     </div>
   </div>
 
-  <!-- Gallery content (hidden until unlocked) -->
+  <!-- Gallery content -->
   <div id="app" class="app hidden">
     <header>
       <div class="header-inner">
@@ -48,24 +37,28 @@
       </div>
     </header>
 
-      <main>
-    <div id="empty" class="empty hidden">
-      <div class="empty-icon">📷</div>
-      <h2>No photos yet</h2>
-      <p>Upload your first photo below!</p>
-    </div>
+    <main>
+      <!-- THIS IS THE MISSING GALLERY DIV -->
+      <div id="gallery" class="gallery"></div>
 
-    <!-- Upload section (visible after unlock) -->
-    <section class="upload-section" id="upload-section">
-      <h2>Add a photo</h2>
-      <form id="upload-form">
-        <input type="file" id="file-input" accept="image/*" />
-        <label for="file-input" class="upload-label">Choose a picture…</label>
-        <button type="submit">Upload</button>
-      </form>
-      <p id="upload-status"></p>
-    </section>
-  </main>
+      <!-- Empty state -->
+      <div id="empty" class="empty hidden">
+        <div class="empty-icon">📷</div>
+        <h2>No photos yet</h2>
+        <p>Upload your first photo below!</p>
+      </div>
+
+      <!-- Upload section -->
+      <section class="upload-section" id="upload-section">
+        <h2>Add a photo</h2>
+        <form id="upload-form">
+          <input type="file" id="file-input" accept="image/*" />
+          <label for="file-input" class="upload-label">Choose a picture…</label>
+          <button type="submit">Upload</button>
+        </form>
+        <p id="upload-status"></p>
+      </section>
+    </main>
   </div>
 
   <!-- Lightbox -->

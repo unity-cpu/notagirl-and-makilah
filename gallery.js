@@ -1,31 +1,22 @@
-/**
- * ============================================
- *  GALLERY LOGIC (Cloudinary version, null-safe)
- * ============================================
- */
-
 const STORAGE_KEY = "gallery_unlocked";
 
-// ====== CLOUDINARY CONFIG (replace with your real values) ======
+// Cloudinary upload config (only used for uploads)
 const CLOUD_NAME = "vrvrxg8g";
 const UPLOAD_PRESET = "gallery_preset";
-const PHOTO_TAG = "gallery"; // optional tag to list only your gallery photos
-// ===============================================================
+const PHOTO_TAG = "gallery";
 
 let photos = [];
 let currentIndex = 0;
 
-// DOM elements
 let passwordGate, passwordForm, passwordInput, passwordError, app;
 let galleryEl, emptyEl, countEl, lightbox, lightboxImg, counterEl;
 let closeBtn, prevBtn, nextBtn;
 let uploadForm, fileInput, uploadStatus;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Helper to safely get an element
   const get = (id) => {
     const el = document.getElementById(id);
-    if (!el) console.error(`Element #${id} not found in HTML`);
+    if (!el) console.error(`Element #${id} not found`);
     return el;
   };
 
@@ -49,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
   fileInput = get("file-input");
   uploadStatus = get("upload-status");
 
-  // Set up event listeners (only if elements exist)
   if (passwordForm) passwordForm.addEventListener("submit", handlePasswordSubmit);
   if (uploadForm) uploadForm.addEventListener("submit", handleUploadSubmit);
 
@@ -124,10 +114,10 @@ async function handlePasswordSubmit(e) {
   }
 }
 
-// ---------- Photo loading (from Cloudinary) ----------
+// ---------- Photo loading (from your API) ----------
 async function loadPhotos() {
   if (!galleryEl || !emptyEl || !countEl) {
-    console.error("Gallery, empty, or count element missing");
+    console.error("Missing gallery/empty/count element");
     return;
   }
 
@@ -139,11 +129,12 @@ async function loadPhotos() {
     }
 
     const data = await res.json();
-    photos = data.photos;   // <-- this is now an array of URLs
+    photos = data.photos;   // array of URLs
 
     if (!photos.length) {
       emptyEl.classList.remove("hidden");
       countEl.textContent = "No photos yet";
+      galleryEl.innerHTML = "";
       return;
     }
 
@@ -170,10 +161,11 @@ async function loadPhotos() {
     console.error("Error loading photos:", err);
     emptyEl.classList.remove("hidden");
     countEl.textContent = "Failed to load photos";
+    galleryEl.innerHTML = "";
   }
 }
 
-// ---------- Upload (to Cloudinary) ----------
+// ---------- Upload ----------
 async function handleUploadSubmit(e) {
   e.preventDefault();
   if (!fileInput || !uploadStatus) return;
@@ -198,7 +190,6 @@ async function handleUploadSubmit(e) {
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       throw new Error(data.error?.message || `Upload failed with status ${res.status}`);
     }
